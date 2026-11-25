@@ -65,9 +65,8 @@ export class WorldMap {
     }
     this.observer = new ResizeObserver(() => this.resize());
     this.observer.observe(this.el);
-    this.scheme = matchMedia('(prefers-color-scheme: dark)');
-    this.onScheme = () => { this.colors = null; this.draw(); };
-    this.scheme.addEventListener('change', this.onScheme);
+    this.onTheme = () => { this.colors = null; this.draw(); };
+    window.addEventListener('themechange', this.onTheme);
   }
 
   expandButton() {
@@ -120,7 +119,7 @@ export class WorldMap {
       this.el.remove();
     }
     this.observer.disconnect();
-    this.scheme.removeEventListener('change', this.onScheme);
+    window.removeEventListener('themechange', this.onTheme);
     cancelAnimationFrame(this.flight);
     cancelAnimationFrame(this.frame);
   }

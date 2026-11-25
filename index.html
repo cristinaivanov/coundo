@@ -5,18 +5,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Coundo</title>
   <meta name="description" content="Capitals, maps and flags in five minutes a day.">
-  <meta name="theme-color" content="#e6eff2" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0f1f28" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#e6eff2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Coundo">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png">
   <link rel="apple-touch-icon" href="./icons/icon-180.png">
+  <script>
+    // Runs before the first paint so the page never flashes in the other theme.
+    (function () {
+      var theme = 'auto';
+      try { theme = JSON.parse(localStorage.getItem('coundo-state')).settings.theme; } catch (e) {}
+      if (theme !== 'light' && theme !== 'dark') theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = theme;
+      // The launch picture fills the screen but the page starts below the status bar, so line the two up.
+      if (navigator.standalone) document.documentElement.style.setProperty('--splash-nudge', -(screen.height - innerHeight) / 2 + 'px');
+    })();
+  </script>
+  <!--launch-->
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/375x667@2-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/375x667@2-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/375x812@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/375x812@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/390x844@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/390x844@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/393x852@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/393x852@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/402x874@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 402px) and (device-height: 874px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/402x874@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/414x736@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/414x736@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/414x896@2-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/414x896@2-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/414x896@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/414x896@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/420x912@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 420px) and (device-height: 912px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/420x912@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/428x926@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/428x926@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/430x932@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/430x932@3-dark.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: light)" href="./launch/440x956@3-light.png">
+  <link rel="apple-touch-startup-image" media="screen and (device-width: 440px) and (device-height: 956px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait) and (prefers-color-scheme: dark)" href="./launch/440x956@3-dark.png">
+  <!--/launch-->
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <div id="app"></div>
+  <div id="splash" role="img" aria-label="Country? More like Coundo.">
+    <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#8fd3ee"></circle><path fill="#6db56f" d="M22 24c9-10 22-14 28-11s2 9-4 12-6 6-5 11-6 9-12 6-12-10-7-18zM60 14c12 2 24 14 27 26-6 3-12 0-14-5s-8-5-11-9-5-9-2-12zM14 62c6-2 14 2 15 8s-2 10-7 8-11-10-8-16zM62 78c6-6 16-8 20-4-5 8-14 14-22 15-4-3-2-7 2-11z"></path><circle cx="37" cy="50" r="4.4" fill="#33272a"></circle><circle cx="38.32" cy="48.46" r="1.584" fill="#fff"></circle><circle cx="63" cy="50" r="4.4" fill="#33272a"></circle><circle cx="64.32" cy="48.46" r="1.584" fill="#fff"></circle><ellipse cx="28" cy="58" rx="3.4" ry="2.2" fill="#f29a94"></ellipse><ellipse cx="72" cy="58" rx="3.4" ry="2.2" fill="#f29a94"></ellipse><path d="M44 59q6 6 12 0" fill="none" stroke="#33272a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    <p class="splash-word">coun<em class="try">try</em>?</p>
+    <p class="splash-aside">…more like</p>
+    <p class="splash-word last">coun<em class="do">do</em></p>
+  </div>
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>

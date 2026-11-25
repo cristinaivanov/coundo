@@ -10,6 +10,7 @@ import { cactusCharacter, flameCharacter, globeCharacter, skyDecoration, waveEdg
 import { filledIcon, icon, rankBadge } from './icons.js';
 import { statisticsSection } from './statistics.js';
 import { backupText, parseBackup } from './store.js';
+import { THEMES, applyTheme } from './theme.js';
 import { formatDay, h, plural } from './util.js';
 
 const LEVEL_COLORS = ['--land', '--lv1', '--lv2', '--lv3'];
@@ -308,6 +309,15 @@ export function settingsScreen(ctx) {
     onClick: () => { update({ pace: n }); paceButtons.forEach((b, i) => b.setAttribute('aria-pressed', String(i + 1 === n))); },
   }, String(n)));
 
+  const themeButtons = THEMES.map(([id, label]) => h('button', {
+    type: 'button', 'aria-pressed': String(settings.theme === id),
+    onClick: e => {
+      update({ theme: id });
+      applyTheme(id);
+      themeButtons.forEach(b => b.setAttribute('aria-pressed', String(b === e.currentTarget)));
+    },
+  }, label));
+
   const continent = h('select', { 'aria-label': 'Learning now', onChange: e => update({ continent: e.target.value }) },
     CONTINENTS.map(c => h('option', { value: c.id, selected: c.id === settings.continent }, c.name)));
 
@@ -323,7 +333,8 @@ export function settingsScreen(ctx) {
     h('section', { class: 'card' },
       h('div', { class: 'setting' }, h('span', {}, 'New countries a day'), h('div', { class: 'segmented' }, paceButtons)),
       h('div', { class: 'setting' }, h('span', {}, 'Learning now'), continent),
-      h('div', { class: 'setting' }, h('span', {}, 'Sound'), sound)),
+      h('div', { class: 'setting' }, h('span', {}, 'Sound'), sound),
+      h('div', { class: 'setting stacked' }, h('span', {}, 'Theme'), h('div', { class: 'segmented', role: 'group', 'aria-label': 'Theme' }, themeButtons))),
     h('section', { class: 'card' },
       h('h3', {}, 'Backup'),
       h('p', { class: 'small muted' }, 'Your progress lives only on this phone. Save a copy now and then, for example to iCloud Drive.'),

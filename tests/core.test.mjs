@@ -562,3 +562,9 @@ test('the announced test rules match the real test', () => {
     assert.deepEqual(L.testRules(region.id), { questions: session.items.length, needed: session.needed });
   }
 });
+
+test('saves from before themes existed follow the phone', () => {
+  const old = freshState();
+  delete old.settings.theme;
+  assert.equal(parseBackup(backupText(old)).settings.theme, 'auto');
+});

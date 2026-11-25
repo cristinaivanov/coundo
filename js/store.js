@@ -15,7 +15,7 @@ export const freshState = () => ({
   stamps: {},
   days: {},
   session: null,
-  settings: { pace: 2, sound: true, continent: 'eu' },
+  settings: { pace: 2, sound: true, continent: 'eu', theme: 'auto' },
 });
 
 export function parseBackup(text) {

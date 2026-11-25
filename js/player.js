@@ -172,6 +172,7 @@ export function runSession(root, ctx, session, onExit) {
     'map-name'(target, q) {
       const map = useMap(new WorldMap({ view: viewFor(q), paint: () => '--land', dots: () => false }));
       map.emphasis.set(q.code, `--${COUNTRIES[q.code].continent}`);
+      map.el.classList.add('above-options');
       target.append(prompt('Which country is highlighted?'), map.el);
       choices(target, q, {
         two: true,

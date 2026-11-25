@@ -5,6 +5,8 @@ import { setMapData } from './map.js';
 import { runSession } from './player.js';
 import { installScreen, passportScreen, settingsScreen, todayScreen, welcomeScreen } from './screens.js';
 import { ranksScreen } from './preview.js';
+import { runSplash } from './splash.js';
+import { applyTheme } from './theme.js';
 import { icon } from './icons.js';
 import { dayNumber, h } from './util.js';
 
@@ -45,6 +47,7 @@ const ctx = {
   skipInstall: () => { installSkipped = true; render(); },
   replaceState: state => {
     ctx.state = { ...state, welcomed: true };
+    applyTheme(ctx.state.settings.theme);
     ctx.save();
     tab = 'today';
     inSettings = false;
@@ -53,11 +56,14 @@ const ctx = {
   reset: () => {
     clearState();
     ctx.state = freshState();
+    applyTheme(ctx.state.settings.theme);
     tab = 'today';
     inSettings = false;
     render();
   },
 };
+
+applyTheme(ctx.state.settings.theme);
 
 function clearMaps() {
   maps.forEach(m => m.destroy());
@@ -102,7 +108,7 @@ async function boot() {
   render();
 }
 
-boot();
+runSplash(boot());
 
 const wantsWorker = !isLocal || params.has('offline');
 if ('serviceWorker' in navigator && wantsWorker) navigator.serviceWorker.register('./sw.js');
