@@ -1,4 +1,5 @@
 import { EMPTY_STREAK } from './streak.js';
+import { NO_FUN_FACTS } from './fun-facts.js';
 
 const KEY = 'coundo-state';
 const APP = 'coundo';
@@ -15,6 +16,7 @@ export const freshState = () => ({
   stamps: {},
   days: {},
   session: null,
+  funFacts: { ...NO_FUN_FACTS },
   settings: { pace: 2, sound: true, continent: 'eu', theme: 'auto' },
 });
 

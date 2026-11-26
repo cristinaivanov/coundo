@@ -1,6 +1,6 @@
 {
-  "name": "Coundo",
-  "short_name": "Coundo",
+  "name": "coundo",
+  "short_name": "coundo",
   "description": "Capitals, maps and flags in five minutes a day.",
   "id": "./",
   "start_url": "./",

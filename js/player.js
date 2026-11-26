@@ -10,6 +10,7 @@ import { flag, preloadFlags, revealTogether } from './flags.js';
 import { SKILL_NAMES, button, countryMap, mysteryStamp, stamp, tone } from './ui.js';
 import { cactusCharacter, confetti, flameCharacter, globeCharacter } from './characters.js';
 import { filledIcon, icon, rankBadge } from './icons.js';
+import { celebrate, tap } from './haptics.js';
 import { play } from './sound.js';
 import { h } from './util.js';
 
@@ -253,6 +254,7 @@ export function runSession(root, ctx, session, onExit) {
     applyAnswer(state, session, correct, today);
     persist();
     play(correct ? 'right' : 'wrong', state.settings.sound);
+    if (correct) tap();
     const go = button('Continue', next);
     footer.replaceChildren(h('div', { class: `feedback ${correct ? 'right' : 'wrong'}`, role: 'status' },
       h('div', {}, h('strong', {}, correct ? 'Correct' : 'Not quite'), message && h('p', {}, message)),
@@ -266,6 +268,7 @@ export function runSession(root, ctx, session, onExit) {
     finish(state, session, today);
     ctx.save();
     play('finish', state.settings.sound);
+    celebrate();
     showResults();
   }
 
@@ -292,6 +295,12 @@ export function runSession(root, ctx, session, onExit) {
   const flagList = (title, codes, className = '') => h('section', { class: `card result-card ${className}` },
     h('h3', {}, title),
     h('div', { class: 'flag-chips' }, codes.map(code => h('span', { class: 'flag-chip' }, flag(code, 'trail-flag'), COUNTRIES[code].name))));
+
+  const funFactCard = ({ code, text }) => h('section', { class: 'card result-card fun-fact', style: tone(COUNTRIES[code].continent) },
+    globeCharacter(),
+    h('p', { class: 'fun-fact-label' }, 'Fun fact of the day'),
+    h('div', { class: 'fun-fact-country' }, flag(code, 'trail-flag'), h('h3', {}, COUNTRIES[code].name)),
+    h('p', { class: 'fun-fact-text' }, text));
 
   function showResults() {
     const { result } = session;
@@ -321,6 +330,7 @@ export function runSession(root, ctx, session, onExit) {
       rank.index > rankBefore && h('section', { class: 'card result-card new-title' },
         rankBadge(rank.progress, rank.name),
         h('div', {}, h('p', { class: 'small muted' }, 'New title'), h('h3', {}, rank.name))),
+      result.funFact && funFactCard(result.funFact),
       session.type === 'lesson' && result.met.length > 0 && flagList(result.met.length === 1 ? 'New country' : 'New countries', result.met),
       result.gold.length > 0 && flagList('Turned gold', result.gold, 'gold'),
       missed.length > 0 && h('section', { class: 'card result-card' },

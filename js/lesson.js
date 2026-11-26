@@ -3,6 +3,7 @@ import { SKILLS, answerFact, countryLevel, factId, isDue, newFact, parseFact } f
 import { isDoneToday, recordLesson } from './streak.js';
 import { XP, xpForAnswer } from './game.js';
 import { arrange } from './mix.js';
+import { pickFunFact } from './fun-facts.js';
 import { clamp, pick, shuffle } from './util.js';
 
 export const MAX_QUESTIONS = 30;
@@ -242,13 +243,14 @@ export function advance(session, rng = Math.random) {
   return true;
 }
 
-export function finish(state, session, today) {
+export function finish(state, session, today, rng = Math.random) {
   if (session.type === 'lesson') {
     const previous = state.streak;
     state.streak = recordLesson(state.streak, today);
     session.result.streakGrew = state.streak !== previous;
     logDay(state, today, { lesson: true });
     award(state, session, today, XP.lesson);
+    session.result.funFact = pickFunFact(state, session.items.map(item => item.code), today, rng);
   }
   if (session.type === 'test') {
     session.result.passed = session.result.right >= session.needed;

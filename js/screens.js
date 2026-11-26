@@ -274,7 +274,7 @@ export function pickBackup(ctx) {
       restored = parseBackup(await file.text());
     } catch {
       openSheet(({ close }) => [
-        h('h2', {}, "That file isn't a Coundo backup"),
+        h('h2', {}, "That file isn't a coundo backup"),
         h('p', { class: 'muted' }, 'Nothing was changed. Choose a file named coundo-backup.'),
         button('OK', close, 'soft'),
       ]);
@@ -342,7 +342,7 @@ export function settingsScreen(ctx) {
       button('Restore backup', () => pickBackup(ctx), 'plain')),
     h('section', { class: 'card' },
       h('h3', {}, 'Daily reminder'),
-      h('p', { class: 'small muted' }, 'In the iPhone Reminders app, add a reminder called Coundo, set a time, and set Repeat to Daily.')),
+      h('p', { class: 'small muted' }, 'In the iPhone Reminders app, add a reminder called coundo, set a time, and set Repeat to Daily.')),
     button('Erase all progress', () => confirmReset(ctx), 'danger'),
     h('p', { class: 'small muted' }, 'Map: Natural Earth. Flags: hampusborgos/country-flags and flag-icons.'));
 }
@@ -359,7 +359,7 @@ export function welcomeScreen(ctx) {
   }, c.name));
   return h('div', { class: 'welcome' },
     map.el,
-    h('h1', {}, 'Coundo'),
+    h('h1', {}, 'coundo'),
     h('p', {}, 'Learn every country: its capital, its flag and its place on the map. One lesson a day, five minutes at most.'),
     h('div', { class: 'stack' }, h('b', {}, 'Where do you want to start?'), h('div', { class: 'wrap' }, chips)),
     h('div', { class: 'stack push' },
@@ -369,12 +369,12 @@ export function welcomeScreen(ctx) {
 
 export function installScreen(ctx) {
   return h('div', { class: 'welcome' },
-    h('h1', {}, 'Add Coundo to your Home Screen'),
+    h('h1', {}, 'Add coundo to your Home Screen'),
     h('p', {}, 'It runs as its own app from there, and works without internet.'),
     h('ol', {},
       h('li', {}, 'Tap the Share button in Safari.'),
       h('li', {}, 'Choose Add to Home Screen, then Add.'),
-      h('li', {}, 'Open Coundo from your Home Screen.')),
+      h('li', {}, 'Open coundo from your Home Screen.')),
     h('p', { class: 'muted' }, "Progress made here in the browser doesn't carry over to the Home Screen app."),
     h('div', { class: 'stack push' }, button('Use it here anyway', ctx.skipInstall, 'plain')));
 }

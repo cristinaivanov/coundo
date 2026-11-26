@@ -568,3 +568,44 @@ test('saves from before themes existed follow the phone', () => {
   delete old.settings.theme;
   assert.equal(parseBackup(backupText(old)).settings.theme, 'auto');
 });
+
+test('fun fact: one a day, only lesson countries, never repeated', async () => {
+  const { pickFunFact } = await import('../js/fun-facts.js');
+  const facts = { fr: ['f0', 'f1'], de: ['d0'], it: ['i0'] };
+  const state = freshState();
+  const first = pickFunFact(state, ['fr', 'fr', 'de'], '2026-01-01', () => 0, facts);
+  assert.deepEqual(first, { code: 'fr', text: 'f0' });
+  assert.equal(pickFunFact(state, ['fr', 'de'], '2026-01-01', () => 0, facts), null);
+  const seenDays = [first.text];
+  for (const day of ['2026-01-02', '2026-01-03']) seenDays.push(pickFunFact(state, ['fr', 'de'], day, () => 0, facts).text);
+  assert.deepEqual(seenDays, ['f0', 'f1', 'd0']);
+  assert.equal(pickFunFact(state, ['fr', 'de'], '2026-01-04', () => 0, facts), null);
+  assert.equal(state.funFacts.day, '2026-01-03');
+  assert.deepEqual(pickFunFact(state, ['it'], '2026-01-04', () => 0, facts), { code: 'it', text: 'i0' });
+});
+
+test('fun fact: shown after the first finished lesson of the day only', () => {
+  const state = freshState();
+  const today = '2026-03-10';
+  const lesson = () => {
+    const session = L.buildLesson(state, today, () => 0.3);
+    L.finish(state, session, today);
+    return session.result.funFact;
+  };
+  const fact = lesson();
+  assert.ok(fact && COUNTRIES[fact.code] && fact.text.length > 0);
+  assert.equal(lesson(), null);
+  assert.equal(parseBackup(backupText(state)).funFacts.seen.length, 1);
+});
+
+test('fun facts: every country has a few short facts', async () => {
+  const { FUN_FACTS } = await import('../data/fun-facts.js');
+  for (const code of ALL_CODES) {
+    const list = FUN_FACTS[code];
+    assert.ok(list?.length >= 2, `${code} has facts`);
+    for (const text of list) {
+      assert.ok(text.length <= 180, `${code}: ${text}`);
+      assert.ok(!/<|>|\bDid you know\b/i.test(text), `${code}: ${text}`);
+    }
+  }
+});
