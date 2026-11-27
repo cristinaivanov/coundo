@@ -1,25 +1,20 @@
-export function tap() {
-  if (navigator.vibrate) {
-    navigator.vibrate(12);
-    return;
-  }
-  // iOS Safari has no vibrate API, but toggling a switch checkbox plays the system haptic (iOS 18+).
-  const label = document.createElement('label');
-  label.ariaHidden = 'true';
-  label.style.display = 'none';
-  const input = document.createElement('input');
-  input.type = 'checkbox';
-  input.setAttribute('switch', '');
-  label.append(input);
-  document.head.append(label);
-  label.click();
-  label.remove();
+import { h } from './util.js';
+
+const canVibrate = typeof navigator.vibrate === 'function';
+
+export const ANSWER_BUZZ = 12;
+export const FINISH_BUZZ = [14, 90, 14, 90, 24];
+
+export function buzz(pattern) {
+  if (canVibrate) navigator.vibrate(pattern);
 }
 
-export function celebrate() {
-  if (navigator.vibrate) {
-    navigator.vibrate([14, 90, 14, 90, 24]);
-    return;
-  }
-  [0, 110, 220].forEach(delay => setTimeout(tap, delay));
+// iOS has no vibrate API and, since iOS 26.5, only plays the switch haptic when the user's own tap flips the switch, so an invisible one sits over the button.
+export function hapticOnTap(button, on = true) {
+  if (canVibrate) return;
+  const existing = button.querySelector(':scope > .haptic');
+  if (!on) existing?.remove();
+  if (!on || existing) return;
+  const input = h('input', { type: 'checkbox', switch: true, tabindex: '-1', onClick: e => e.stopPropagation() });
+  button.append(h('label', { class: 'haptic', 'aria-hidden': 'true' }, input));
 }

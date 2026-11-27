@@ -1,5 +1,5 @@
 import { CONTINENT_BY_ID, COUNTRIES, REGION_BY_ID } from '../data/countries.js';
-import { TIME_LIMIT_MS, advance, applyAnswer, currentItem, difficulty, finish, finishedRegions, isNewFact, meetCountry, testRules } from './lesson.js';
+import { TIME_LIMIT_MS, advance, applyAnswer, currentItem, difficulty, finish, finishedRegions, isFinalItem, isNewFact, meetCountry, testRules } from './lesson.js';
 import { makeQuestion } from './questions.js';
 import { checkCapital } from './text.js';
 import { WorldMap, boxFromDegrees, shapeOf } from './map.js';
@@ -10,7 +10,7 @@ import { flag, preloadFlags, revealTogether } from './flags.js';
 import { SKILL_NAMES, button, countryMap, mysteryStamp, stamp, tone } from './ui.js';
 import { cactusCharacter, confetti, flameCharacter, globeCharacter } from './characters.js';
 import { filledIcon, icon, rankBadge } from './icons.js';
-import { celebrate, tap } from './haptics.js';
+import { ANSWER_BUZZ, FINISH_BUZZ, buzz, hapticOnTap } from './haptics.js';
 import { play } from './sound.js';
 import { h } from './util.js';
 
@@ -120,6 +120,7 @@ export function runSession(root, ctx, session, onExit) {
       });
       settle(correct, explain(code, correct));
     };
+    hapticOnTap(buttons[q.options.indexOf(q.code)]);
     target.append(h('div', { class: `options${two ? ' two' : ''}` }, buttons));
     const frames = buttons.flatMap(b => b.querySelector('.flag') ?? []);
     if (frames.length === 0) return;
@@ -149,6 +150,7 @@ export function runSession(root, ctx, session, onExit) {
       const input = h('input', {
         class: 'answer', type: 'text', placeholder: 'Type the capital', 'aria-label': 'Capital',
         autocomplete: 'off', autocorrect: 'off', autocapitalize: 'words', spellcheck: 'false', enterkeyhint: 'done',
+        onInput: () => hapticOnTap(check, input.value.trim() !== '' && checkCapital(q.code, input.value) !== 'wrong'),
       });
       const submit = typed => {
         if (input.disabled) return;
@@ -163,8 +165,9 @@ export function runSession(root, ctx, session, onExit) {
         settle(correct, [spelling, capitalNote(q.code)].join(' ').trim());
       };
       const form = h('form', { class: 'stack', onSubmit: e => { e.preventDefault(); if (input.value.trim()) submit(input.value); } }, input);
+      const check = h('button', { class: 'btn', type: 'button', onClick: () => { if (input.value.trim()) submit(input.value); } }, 'Check');
       const controls = h('div', { class: 'stack' },
-        h('button', { class: 'btn', type: 'submit' }, 'Check'),
+        check,
         button("I don't know", () => submit(null), 'plain'));
       form.append(controls);
       target.append(prompt('What is the capital of', `${COUNTRIES[q.code].inSentence}?`), form);
@@ -199,6 +202,7 @@ export function runSession(root, ctx, session, onExit) {
           map.emphasis = new Map([[code, '--accent']]);
           map.draw();
           check.disabled = false;
+          hapticOnTap(check, code === q.code);
         },
       }));
       const check = button('Check', () => {
@@ -254,8 +258,9 @@ export function runSession(root, ctx, session, onExit) {
     applyAnswer(state, session, correct, today);
     persist();
     play(correct ? 'right' : 'wrong', state.settings.sound);
-    if (correct) tap();
+    if (correct) buzz(ANSWER_BUZZ);
     const go = button('Continue', next);
+    if (isFinalItem(session)) hapticOnTap(go);
     footer.replaceChildren(h('div', { class: `feedback ${correct ? 'right' : 'wrong'}`, role: 'status' },
       h('div', {}, h('strong', {}, correct ? 'Correct' : 'Not quite'), message && h('p', {}, message)),
       go));
@@ -268,7 +273,7 @@ export function runSession(root, ctx, session, onExit) {
     finish(state, session, today);
     ctx.save();
     play('finish', state.settings.sound);
-    celebrate();
+    buzz(FINISH_BUZZ);
     showResults();
   }
 

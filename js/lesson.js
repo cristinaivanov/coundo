@@ -227,6 +227,12 @@ export function applyAnswer(state, session, correct, today) {
   if (correct) award(state, session, today, xpForAnswer(item.q?.format, item.phase));
 }
 
+export function isFinalItem(session) {
+  if (session.type === 'lesson' && session.elapsed >= TIME_LIMIT_MS) return true;
+  if (session.idx + 1 < session.items.length) return false;
+  return session.type === 'test' || session.fixAdded || session.result.missed.length === 0;
+}
+
 export function advance(session, rng = Math.random) {
   const previous = currentItem(session);
   session.idx += 1;
